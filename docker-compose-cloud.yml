@@ -1,0 +1,17 @@
+version: '3'
+
+services:
+ 
+  td-frontend:
+    image: orogers/td-frontend:v0.0.1
+    ports:
+      - "80:80"
+
+
+  td-api:
+    image: orogers/td-api:v0.0.1
+    command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    ports:
+      - "8000:8000"
+    environment:
+      - MONGODBURL=mongodb+srv://ttuser:ttpassword@cluster0-wnuyh.mongodb.net/test?retryWrites=true&w=majority
