@@ -1,1 +1,1 @@
-docker stack deploy -c docker-compose-local.yml local
+docker-compose -f docker-compose-local.yml up
