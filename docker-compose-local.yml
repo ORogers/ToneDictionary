@@ -7,8 +7,8 @@ services:
       - "3000:3000"
 
   td-api:
-    image: orogers/td-api:v0.0.4
-    command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    image: orogers/td-api:v0.0.5
+    command: bash -c "./wait-for mongodb:27017 python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     ports:
       - "8000:8000"
     depends_on: 
