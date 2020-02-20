@@ -1,0 +1,41 @@
+{
+    "AWSEBDockerrunVersion": 2,
+    "containerDefinitions": [
+      {
+        "name": "td-api",
+        "image": "orogers/td-api:v0.0.3",
+        "memory": "256",
+        "cpu": "256",
+        "essential": true,
+        "portMappings": [
+            {
+              "hostPort": "8000",
+              "containerPort": "8000"
+            }
+        ],
+        "environment": [ 
+            { 
+               "name": "MONDGODBURL",
+               "value": "mongodb+srv://ttuser:ttpassword@cluster0-wnuyh.mongodb.net/test?retryWrites=true&w=majority"
+            }
+         ]
+      },
+      {
+        "name": "td-gateway",
+        "image": "orogers/td-gateway:v0.0.1",
+        "memory": "128",
+        "cpu": "128",
+        "essential": true,
+        "portMappings": [
+          {
+            "containerPort": "80",
+            "protocol": "tcp"
+          }
+        ],
+        "links": [
+          "td-api"
+        ]
+      }
+    ]
+  }
+  

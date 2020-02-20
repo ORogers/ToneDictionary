@@ -2,18 +2,23 @@ version: '3'
 
 services:
   td-frontend:
-    image: orogers/td-frontend:v0.0.1
+    image: orogers/td-frontend:v0.0.4
     ports:
-      - "80:80"
+      - "3000:3000"
 
   td-api:
-    image: orogers/td-api:v0.0.1
+    image: orogers/td-api:v0.0.4
     command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     ports:
       - "8000:8000"
     environment:
       - MONGODBURL=mongodb://mongodb:27017
 
+
+  gateway:
+    image: orogers/td-gateway:v0.0.1
+    ports:
+      - "80:80"
 
   mongodb:
     image: mongo
