@@ -1,14 +1,15 @@
 version: '3'
 
 services:
+
   td-frontend:
-    image: orogers/td-frontend:v0.0.4
+    image: orogers/td-frontend:v0.0.6
     ports:
       - "3000:3000"
 
   td-api:
     image: orogers/td-api:v0.0.5
-    command: bash -c "./wait-for mongodb:27017 python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     ports:
       - "8000:8000"
     depends_on: 
@@ -19,9 +20,6 @@ services:
 
   gateway:
     image: orogers/td-gateway:v0.0.1
-    depends_on: 
-      - "td-frontend"
-      - "td-api"
     ports:
       - "80:80"
 
