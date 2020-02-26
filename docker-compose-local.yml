@@ -3,12 +3,12 @@ version: '3'
 services:
 
   td-frontend:
-    image: orogers/td-frontend:v0.0.6
+    image: orogers/td-frontend:v0.1.0
     ports:
-      - "3000:3000"
+      - "3000:80"
 
   td-api:
-    image: orogers/td-api:v0.0.5
+    image: orogers/td-api:v0.1.13
     command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     ports:
       - "8000:8000"
