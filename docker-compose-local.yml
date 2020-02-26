@@ -3,9 +3,9 @@ version: '3'
 services:
 
   td-frontend:
-    image: orogers/td-frontend:v0.1.8
+    image: orogers/td-frontend:v0.1.11
     ports:
-      - "3000:3000"
+      - "3000:80"
 
   td-api:
     image: orogers/td-api:v0.1.13
