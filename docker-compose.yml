@@ -1,0 +1,38 @@
+version: '3'
+
+services:
+
+  td-frontend:
+    image: orogers/td-frontend:v0.2.2
+    ports:
+      - "3000:3000"
+
+  td-api:
+    image: orogers/td-api:v0.1.15
+    command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    ports:
+      - "8000:8000"
+    depends_on: 
+      - "mongodb"
+    environment:
+      - MONGODBURL=mongodb://mongodb:27017
+
+
+  gateway:
+    image: orogers/td-gateway:v0.0.1
+    depends_on: 
+      - "td-frontend"
+      - "td-api"
+    ports:
+      - "80:80"
+
+  mongodb:
+    image: mongo
+    volumes:
+      - /opt/mongo-volume:/data/db
+    ports:
+      - "27017:27017" 
+
+
+
+
