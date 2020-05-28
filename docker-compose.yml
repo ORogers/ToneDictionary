@@ -3,28 +3,45 @@ version: '3'
 services:
 
   td-frontend:
-    image: orogers/td-frontend:v0.2.2
+    image: orogers/td-frontend:v0.5.3
     ports:
       - "3000:3000"
+  
+
 
   td-api:
-    image: orogers/td-api:v0.1.15
+    image: orogers/td-api:v0.2.4
     command: bash -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     ports:
       - "8000:8000"
+    volumes:
+      - /opt/tonedictionary/media:/opt/tonedictionary/media
     depends_on: 
       - "mongodb"
     environment:
       - MONGODBURL=mongodb://mongodb:27017
 
-
   gateway:
     image: orogers/td-gateway:v0.0.1
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+    volumes: 
+      - ./data/nginx:/etc/nginx/conf.d
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
+      - /opt/tonedictionary/media:/www/media
     depends_on: 
       - "td-frontend"
       - "td-api"
     ports:
       - "80:80"
+      - "443:443"
+
+  certbot:
+    image: certbot/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    volumes:
+      - ./data/certbot/conf:/etc/letsencrypt
+      - ./data/certbot/www:/var/www/certbot
 
   mongodb:
     image: mongo
@@ -32,7 +49,39 @@ services:
       - /opt/mongo-volume:/data/db
     ports:
       - "27017:27017" 
+ 
 
-
-
+##ELK Stack - uncomment to deploy monitoring stack
+#  elasticsearch:
+#    image: docker.elastic.co/elasticsearch/elasticsearch:7.1.1
+#    environment: 
+#      - discovery.type=single-node
+#      - xpack.security.enabled=false
+#    networks:
+#     - logging-network
+#
+#  kibana:
+#    image: docker.elastic.co/kibana/kibana:7.1.1
+#    depends_on:
+#      - filebeat
+#    ports: 
+#      - 5601:5601
+#    networks:
+#      - logging-network
+#   
+#  filebeat:
+#    image: "docker.elastic.co/beats/filebeat:7.2.0"
+#    user: root
+#    volumes:
+#      - ./filebeat.yml:/usr/share/filebeat/filebeat.yml:ro
+#      - /var/lib/docker:/var/lib/docker:ro
+#      - /var/run/docker.sock:/var/run/docker.sock
+#    networks:
+#      - logging-network
+#
+#networks: 
+#  logging-network:
+#    driver: bridge
+#
+  
 
